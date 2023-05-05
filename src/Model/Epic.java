@@ -3,17 +3,17 @@ package Model;
 import java.util.List;
 
 public class Epic extends Task{
-     List<SubTask> subTasks;
+     List<Integer> subTasksId;
 
     public Epic(String name , String description ) {
         super(name, description);
     }
 
-    public List<SubTask> getSubTasks() {
-        return subTasks;
+    public List<Integer> getSubTasksId() {
+        return subTasksId;
     }
 
-    public void setSubTasks(List<SubTask> subTasks) {
-        this.subTasks = subTasks;
+    public void setSubTasksId(List<Integer> subTasksId) {
+        this.subTasksId = subTasksId;
     }
 }
