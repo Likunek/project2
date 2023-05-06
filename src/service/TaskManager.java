@@ -43,27 +43,44 @@ public class TaskManager {
 
 
 
-    public void update(Task task, String status) {
+    public void update(Task task, String status,  int id) {
         task.setStatus(status);
-       tasks.put(task.getId(), task);
+       tasks.put(id, task);
     }
 
-    public void updateEpic(Epic epic, String status) {
-        epic.setStatus(status);
-        epics.put(epic.getId(), epic);
+    public void updateEpic(Epic epic,  int id) {
+        epics.put(id, epic);
     }
 
-    public void updateSubTask(SubTask subTask, String status) {
+    public void updateSubTask(SubTask subTask, String status, int id) {
         subTask.setStatus(status);
-        subTasks.put(subTask.getId(), subTask);
-        updateEpicStatus(epics.get(subTask.getEpicId()));
+        subTasks.put(id, subTask);
+        updateEpicStatus(epics.get(id));
     }
 
 
     private void updateEpicStatus(Epic epic){
         int countDone = 0;
         int countNew = 0;
-            for (int i = 0; i < epic.getSubTasksId().size(); i++) {
+        if (!epic.getSubTasksId().isEmpty()) {
+            for (Integer subTaskId : epic.getSubTasksId()) {
+                if (subTasks.get(subTaskId).getStatus().equals("Done")) {
+                    countDone++;
+                } else if (subTasks.get(subTaskId).getStatus().equals("new")) {
+                    countNew++;
+                }
+            }
+            if (countDone == epic.getSubTasksId().size()) {
+                epic.setStatus("Done");
+            } else if (countNew == epic.getSubTasksId().size()) {
+                epic.setStatus("new");
+            } else {
+                epic.setStatus("In_progress");
+            }
+        }
+
+
+           /* for (int i = 0; i < epic.getSubTasksId().size(); i++) {
                 if (subTasks.get(epic.getSubTasksId().get(i)).getStatus().equals("Done")) {
                     countDone++;
                 } else if (subTasks.get(epic.getSubTasksId().get(i)).getStatus().equals("new")) {
@@ -76,7 +93,7 @@ public class TaskManager {
                 epic.setStatus("new");
             }else {
               epic.setStatus("In_progress");
-            }
+            }*/
     }
 
 

@@ -15,7 +15,7 @@ public class Main {
 
         // Меняю содержание задачи и ее статус
            task.setDescription("Clean home");
-           taskManager.update(task, "In_progress");
+           taskManager.update(task, "In_progress", 1);
            System.out.println("Update task:" + task);
 
         //Удаляю задачу
@@ -33,8 +33,8 @@ public class Main {
            epic.setSubTasksId(subTasks);
            System.out.println(epic + "\n" + epic.getSubTasksId());
 
-        //Меняю одну подзадачу эпика
-        taskManager.updateSubTask(new SubTask("bake", "put it in the oven", epic.getId()), "In_progress");
+        //Добавляю одну подзадачу эпика
+        taskManager.updateSubTask(new SubTask("bake", "put it in the oven", epic.getId()), "In_progress", 4);
 
            System.out.println(taskManager.getAllTasks());
 
