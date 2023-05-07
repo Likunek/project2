@@ -43,19 +43,83 @@ public class TaskManager {
 
 
 
-    public void update(Task task, String status,  int id) {
-        task.setStatus(status);
-       tasks.put(id, task);
+    public void updateTask(Task task) {
+        task.setStatus(task.getStatus());
+       tasks.put(task.getId(), task);
     }
 
-    public void updateEpic(Epic epic,  int id) {
-        epics.put(id, epic);
+    public void updateEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
     }
 
-    public void updateSubTask(SubTask subTask, String status, int id) {
-        subTask.setStatus(status);
-        subTasks.put(id, subTask);
-        updateEpicStatus(epics.get(id));
+    public void updateSubTask(SubTask subTask) {
+        subTasks.put(subTask.getEpicId(), subTask);
+        updateEpicStatus(epics.get(subTask.getEpicId()));
+    }
+
+
+    public void deleteTask(int id) { tasks.remove(id);}
+
+    public void deleteEpic(int id){
+        for (int i = 0; i < epics.get(id).getSubTasksId().size(); i++) {
+            subTasks.remove(epics.get(id).getSubTasksId().get(i));
+        }
+        epics.remove(id);
+    }
+
+    public void deleteSubTask(int id){
+        epics.get(subTasks.get(id).getEpicId()).getSubTasksId().remove(Integer.valueOf(id));
+        updateEpicStatus(epics.get(subTasks.get(id).getEpicId()));
+    }
+
+    public void deleteAllTask(){
+        tasks.clear();
+    }
+
+    public void deleteAllEpic(){
+        epics.clear();
+        subTasks.clear();
+    }
+
+    public void deleteAllSubTask(){
+        subTasks.clear();
+        for (Epic epic : epics.values()){
+            epic.setStatus("new");
+            epic.getSubTasksId().clear();
+        }
+    }
+    public void deleteAll(){
+        tasks.clear();
+        epics.clear();
+        subTasks.clear();
+    }
+
+
+   public List<Task> getAllTask(){
+        return new ArrayList<>(tasks.values());
+   }
+
+    public List<Epic> getAllEpic(){
+        return new ArrayList<>(epics.values());
+    }
+
+    public List<SubTask> getAllSubTask(){
+        return new ArrayList<>(subTasks.values());
+    }
+
+    public  List<SubTask> getTheSubTasksEpic(int idEpic){
+        ArrayList<SubTask> allTask = new ArrayList<>();
+        for (Integer idSubTask : epics.get(idEpic).getSubTasksId()){
+            allTask.add(subTasks.get(idSubTask));
+        }
+        return allTask;
+    }
+    public List<Object> getAll(){
+        ArrayList<Object> allTask = new ArrayList<>();
+        allTask.add(new ArrayList<>(tasks.values()));
+        allTask.add(new ArrayList<>(epics.values()));
+        allTask.add(new ArrayList<>(subTasks.values()));
+        return allTask;
     }
 
 
@@ -78,53 +142,6 @@ public class TaskManager {
                 epic.setStatus("In_progress");
             }
         }
-
-
-           /* for (int i = 0; i < epic.getSubTasksId().size(); i++) {
-                if (subTasks.get(epic.getSubTasksId().get(i)).getStatus().equals("Done")) {
-                    countDone++;
-                } else if (subTasks.get(epic.getSubTasksId().get(i)).getStatus().equals("new")) {
-                    countNew++;
-                }
-            }
-            if (countDone == epic.getSubTasksId().size()) {
-                epic.setStatus("Done");
-            }else if (countNew == epic.getSubTasksId().size()){
-                epic.setStatus("new");
-            }else {
-              epic.setStatus("In_progress");
-            }*/
     }
 
-
-    public void deleteTask(int id) { tasks.remove(id);}
-
-    public void deleteEpic(int id){
-        for (int i = 0; i < epics.get(id).getSubTasksId().size(); i++) {
-            subTasks.remove(epics.get(id).getSubTasksId().get(i));
-        }
-        epics.remove(id);
-    }
-
-    public void deleteSubTask(int id){
-        for (Epic i : epics.values()) {
-            i.getSubTasksId().remove(id);
-        }
-        subTasks.remove(id);
-    }
-
-
-    public List<Object> getAllTasks(){
-        ArrayList<Object> allTask = new ArrayList<>();
-        allTask.add(new ArrayList<>(tasks.values()));
-        allTask.add(new ArrayList<>(epics.values()));
-        allTask.add(new ArrayList<>(subTasks.values()));
-        return allTask;
-    }
-
-    public void geleteAllTask(){
-        tasks.clear();
-        epics.clear();
-        subTasks.clear();
-    }
 }
