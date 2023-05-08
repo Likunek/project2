@@ -44,7 +44,6 @@ public class TaskManager {
 
 
     public void updateTask(Task task) {
-        task.setStatus(task.getStatus());
        tasks.put(task.getId(), task);
     }
 
@@ -53,9 +52,10 @@ public class TaskManager {
     }
 
     public void updateSubTask(SubTask subTask) {
-        subTasks.put(subTask.getEpicId(), subTask);
+        subTasks.put(subTask.getId(), subTask);
         updateEpicStatus(epics.get(subTask.getEpicId()));
     }
+
 
 
     public void deleteTask(int id) { tasks.remove(id);}
@@ -93,6 +93,7 @@ public class TaskManager {
         epics.clear();
         subTasks.clear();
     }
+
 
 
    public List<Task> getAllTask(){
