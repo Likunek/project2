@@ -5,14 +5,14 @@ import java.util.Objects;
 public class Task {
     private int id;
     private String name;
-    private String status;
+    private Status status;
     private String description;
 
 
     public Task(String name, String description){
         this.name = name;
         this.description = description;
-        this.status = "new";
+        this.status = Status.NEW;
     }
     public int getId() {
         return id;
@@ -30,11 +30,11 @@ public class Task {
         this.name = name;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

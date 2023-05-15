@@ -2,22 +2,26 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import Model.Epic;
+import Model.Status;
 import Model.SubTask;
 import Model.Task;
-import service.TaskManager;
+import service.InMemoryHistoryManager;
+import service.InMemoryTaskManager;
 
 public class Main {
        public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+           InMemoryTaskManager taskManager = new InMemoryTaskManager();
         // Создаю задачу и пишу ее описание
         Task task = taskManager.createTask(new Task("New task", "home work"));
         System.out.println("Create task:" + task);
 
         // Меняю содержание задачи и ее статус
            task.setDescription("Clean home");
-           task.setStatus("In_progress" );
+           task.setStatus(Status.IN_PROGRESS);
            taskManager.updateTask(task);
            System.out.println("Update task:" + task);
+           System.out.println(taskManager.getTask(1));
+
 
         //Удаляю задачу
            taskManager.deleteTask(task.getId());
@@ -38,7 +42,9 @@ public class Main {
 
         taskManager.updateSubTask(new SubTask("bake", "put it in the oven", epic.getId()));
 
+           System.out.println(taskManager.getEpic(2));
            System.out.println(taskManager.getAll());
+           System.out.println(taskManager.historyManager.getHistory());
 
        }
 }
