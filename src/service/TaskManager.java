@@ -21,7 +21,8 @@ public interface TaskManager {
     public void deleteAllTasks();
     public void deleteAllEpics();
     public void deleteAllSubTasks();
-    public void deleteHistory(int id);
+    public void deleteTaskHistory(int id);
+    public void deleteAllHistory();
     public void deleteAll();
     public Task getTask(int id);
     public Epic getEpic(int id);
