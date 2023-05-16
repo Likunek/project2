@@ -16,14 +16,15 @@ public class InMemoryHistoryManager implements HistoryManager{
     @Override
     public void add(Task task) {
         history.add(task);
-        lenHistory();
+        ensureCapacity();
     }
 
     @Override
     public List<Task> getHistory(){
         return history;
     }
-    private void lenHistory(){
+
+    private void ensureCapacity(){
         if (history.size() > 10){
             history.remove(0);
         }
