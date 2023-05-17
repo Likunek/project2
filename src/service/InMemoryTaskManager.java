@@ -68,30 +68,35 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
-    public void deleteTask(int id) { tasks.remove(id);}
+    public void deleteTask(int id) { tasks.remove(id); historyManager.getHistory().removeIf(task -> task.getId() == id);}
 
     @Override
     public void deleteEpic(int id){
-        for (int i = 0; i < epics.get(id).getSubTasksId().size(); i++) {
-            subTasks.remove(epics.get(id).getSubTasksId().get(i));
+        for (SubTask subTask : subTasks.values()){
+            if (subTask.getEpicId() == id) subTasks.remove(subTask.getId());
         }
+        historyManager.getHistory().removeIf(task -> task.getId() == id);
         epics.remove(id);
     }
     @Override
     public void deleteSubTask(int id){
         epics.get(subTasks.get(id).getEpicId()).getSubTasksId().remove(Integer.valueOf(id));
         updateEpicStatus(epics.get(subTasks.get(id).getEpicId()));
+        historyManager.getHistory().remove(subTasks.get(id));
+        subTasks.remove(id);
     }
 
     @Override
     public void deleteAllTasks(){
         tasks.clear();
+        historyManager.getHistory().removeIf(task -> !(task instanceof Epic || task instanceof SubTask));
     }
 
     @Override
     public void deleteAllEpics(){
         epics.clear();
         subTasks.clear();
+        historyManager.getHistory().removeIf(task -> task instanceof Epic || task instanceof SubTask);
     }
 
     @Override
@@ -101,15 +106,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.NEW);
             epic.getSubTasksId().clear();
         }
-    }
-
-    @Override
-    public void deleteTaskHistory(int id){
-        historyManager.getHistory().removeIf(task -> task.getId() == id);
-    }
-    @Override
-    public void deleteAllHistory(){
-        historyManager.getHistory().clear();
+        historyManager.getHistory().removeIf(task -> task instanceof SubTask);
     }
 
     @Override
@@ -194,6 +191,9 @@ public class InMemoryTaskManager implements TaskManager {
 
 
 
+    private void deleteTaskHistory(int id){
+        historyManager.getHistory().removeIf(task -> task.getId() == id);
+    }
     private void updateEpicStatus(Epic epic){
         int countDone = 0;
         int countNew = 0;
