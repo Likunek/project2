@@ -194,9 +194,6 @@ public class InMemoryTaskManager implements TaskManager {
         return allTask;
     }
 
-    private void deleteTaskHistory(int id){
-        historyManager.getHistory().removeIf(task -> task.getId() == id);
-    }
 
     private void updateEpicStatus(Epic epic){
         int countDone = 0;
