@@ -7,7 +7,10 @@ import Model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
 
 public class InMemoryTaskManager implements TaskManager {
     HashMap<Integer, Task> tasks;
@@ -31,7 +34,6 @@ public class InMemoryTaskManager implements TaskManager {
           tasks.put(task.getId(), task);
           return  task;
     }
-
     @Override
     public Epic createEpic(Epic epic){
         epic.setId(++seq);
@@ -70,23 +72,26 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(int id) {
         tasks.remove(id);
-        historyManager.getHistory().removeIf(task -> task.getId() == id);
+        historyManager.remove(id);
     }
 
     @Override
     public void deleteEpic(int id){
-        for (SubTask subTask : subTasks.values()){
-            if (subTask.getEpicId() == id) subTasks.remove(subTask.getId());
+        HashMap<Integer, SubTask> cope = new HashMap<>(subTasks);
+        for (SubTask subTask : cope.values()){
+           if (subTask.getEpicId() == id){
+               historyManager.remove(subTask.getId());
+               subTasks.remove(subTask.getId());
+           }
         }
-
-        historyManager.getHistory().removeIf(task -> task.getId() == id || (task instanceof SubTask && ((SubTask) task).getEpicId() == id));
+        historyManager.remove(id);
         epics.remove(id);
     }
     @Override
     public void deleteSubTask(int id){
         epics.get(subTasks.get(id).getEpicId()).getSubTasksId().remove(Integer.valueOf(id));
         updateEpicStatus(epics.get(subTasks.get(id).getEpicId()));
-        historyManager.getHistory().remove(subTasks.get(id));
+        historyManager.remove(id);
         subTasks.remove(id);
     }
 
