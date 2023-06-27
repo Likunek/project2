@@ -12,14 +12,10 @@ public class Main {
 
           //Создаю эпик с двумя подзадачами
            Epic epic =  taskManager.createEpic(new Epic("make a pie", "by 6 pm"));
-           ArrayList<Integer> subTasks = new ArrayList<>();
-           SubTask subTask1 = taskManager.createSubTask(new SubTask("dough", "knead the dough", epic.getId()));
-           SubTask subTask2 = taskManager.createSubTask(new SubTask("filling", "cook the filling", epic.getId()));
-           SubTask subTask3 = taskManager.createSubTask(new SubTask("bake", "put it in the oven", epic.getId()));
-           subTasks.add(subTask1.getId());
-           subTasks.add(subTask2.getId());
-           subTasks.add(subTask3.getId());
-           epic.setSubTasksId(subTasks);
+           taskManager.createSubTask(new SubTask("dough", "knead the dough", epic.getId()));
+           taskManager.createSubTask(new SubTask("filling", "cook the filling", epic.getId()));
+           taskManager.createSubTask(new SubTask("bake", "put it in the oven", epic.getId()));
+
            System.out.println(epic + "\n" + epic.getSubTasksId());
 
            //Создаю эпик без под задач

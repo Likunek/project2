@@ -7,15 +7,15 @@ import Model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+
 
 
 public class InMemoryTaskManager implements TaskManager {
     HashMap<Integer, Task> tasks;
     HashMap<Integer, Epic> epics;
     HashMap<Integer, SubTask> subTasks;
+    ArrayList<Integer> subTasksId;
     private final HistoryManager historyManager;
     int seq = 0;
 
@@ -46,6 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTask.setId(++seq);
         subTasks.put(subTask.getId(), subTask);
         updateEpicStatus(epics.get(subTask.getEpicId()));
+        epics.get(subTask.getEpicId()).subTasksId(subTask.getId());
         return subTask;
     }
 

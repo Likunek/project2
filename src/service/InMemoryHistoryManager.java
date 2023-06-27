@@ -1,9 +1,8 @@
 package service;
 
-import Model.SubTask;
+
 import Model.Task;
 
-import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +15,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public static  Node<Task> tail;
     ArrayList<Task> history;
     Map<Integer, Node<Task>> elements;
-    private int size = 0;
+
 
     public InMemoryHistoryManager() {
         this.history = new ArrayList<>();
@@ -32,7 +31,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             head =  newNode;
         else
             oldHead.next =  newNode;
-        size++;
+
         elements.put(element.getId(), newNode);
     }
 
@@ -79,7 +78,6 @@ public class InMemoryHistoryManager implements HistoryManager {
                 tail = prev;
             }
             node = null;
-            size--;
         }
     }
     private void getTasks(Node<Task> task){
