@@ -5,6 +5,7 @@ import Model.Status;
 import Model.SubTask;
 import Model.Task;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,6 @@ public class InMemoryTaskManager implements TaskManager {
     HashMap<Integer, Task> tasks;
     HashMap<Integer, Epic> epics;
     HashMap<Integer, SubTask> subTasks;
-    ArrayList<Integer> subTasksId;
     private final HistoryManager historyManager;
     int seq = 0;
 
@@ -25,6 +25,7 @@ public class InMemoryTaskManager implements TaskManager {
         this.subTasks = new HashMap<>();
         this.historyManager = Managers.getDefaultHistoryManager();
     }
+
 
 
 
@@ -46,7 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTask.setId(++seq);
         subTasks.put(subTask.getId(), subTask);
         updateEpicStatus(epics.get(subTask.getEpicId()));
-        epics.get(subTask.getEpicId()).subTasksId(subTask.getId());
+        epics.get(subTask.getEpicId()).addSubtaskId(subTask.getId());
         return subTask;
     }
 
@@ -56,8 +57,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task task) {
        tasks.put(task.getId(), task);
     }
-    @Override
 
+    @Override
     public void updateEpic(Epic epic) {
         epics.put(epic.getId(), epic);
     }
@@ -183,7 +184,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public  List<SubTask> getTheSubTasksEpic(int idEpic){
+    public  List<SubTask> getTheSubTasksEpic(int idEpic) throws FileNotFoundException {
         ArrayList<SubTask> allTask = new ArrayList<>();
         for (Integer idSubTask : epics.get(idEpic).getSubTasksId()){
             allTask.add(subTasks.get(idSubTask));

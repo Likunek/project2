@@ -4,6 +4,7 @@ import Model.Epic;
 import Model.SubTask;
 import Model.Task;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface TaskManager {
     public List<Epic> getAllEpics();
     public List<SubTask> getAllSubTasks();
     public List<Task> getHistory();
-    public  List<SubTask> getTheSubTasksEpic(int idEpic);
+    public  List<SubTask> getTheSubTasksEpic(int idEpic) throws FileNotFoundException;
     public List<Object> getAll();
 
 }

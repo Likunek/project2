@@ -1,13 +1,15 @@
+import java.io.IOException;
 import java.util.ArrayList;
 
 import Model.Epic;
 import Model.SubTask;
 import Model.Task;
+import service.FileBackedTasksManager;
 import service.Managers;
 import service.TaskManager;
 
 public class Main {
-       public static void main(String[] args) {
+       public static void main(String[] args) throws IOException {
            TaskManager taskManager = Managers.getDefaultTaskManager();
 
           //Создаю эпик с двумя подзадачами
@@ -37,6 +39,10 @@ public class Main {
            // Удаляю эпик с 3 подзадачами
            taskManager.deleteEpic(1);
            System.out.println(taskManager.getHistory());
+
+
+
+
 
        }
 }
