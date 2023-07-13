@@ -20,7 +20,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public InMemoryHistoryManager() {
         this.history = new ArrayList<>();
         this.elements = new HashMap<>();
-    }
+  }
 
     public void linkLast(Task element) {
         final Node<Task> oldHead = tail;

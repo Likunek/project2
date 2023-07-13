@@ -1,0 +1,7 @@
+id,type,name,status,description,epic
+1,EPIC,make a pie,NEW,by 6 pm,
+5,EPIC,morning,NEW,wash your hair,
+2,SUBTASK,dough,NEW,knead the dough,1,
+4,SUBTASK,bake,NEW,put it in the oven,1,
+
+1

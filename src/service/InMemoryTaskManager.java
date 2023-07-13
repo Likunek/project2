@@ -13,16 +13,16 @@ import java.util.List;
 
 
 public class InMemoryTaskManager implements TaskManager {
-    HashMap<Integer, Task> tasks;
-    HashMap<Integer, Epic> epics;
-    HashMap<Integer, SubTask> subTasks;
-    private final HistoryManager historyManager;
+    static HashMap<Integer, Task> tasks;
+    static HashMap<Integer, Epic> epics;
+    static HashMap<Integer, SubTask> subTasks;
+    final HistoryManager historyManager;
     int seq = 0;
 
     public InMemoryTaskManager() {
-        this.tasks = new HashMap<>();
-        this.epics = new HashMap<>();
-        this.subTasks = new HashMap<>();
+        tasks = new HashMap<>();
+        epics = new HashMap<>();
+        subTasks = new HashMap<>();
         this.historyManager = Managers.getDefaultHistoryManager();
     }
 
