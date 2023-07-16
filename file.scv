@@ -4,4 +4,4 @@ id,type,name,status,description,epic
 2,SUBTASK,dough,NEW,knead the dough,1,
 4,SUBTASK,bake,NEW,put it in the oven,1,
 
-1
+4,5,1
