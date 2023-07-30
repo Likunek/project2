@@ -45,7 +45,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(fileBackedTasksManager.getHistory());
 
 
-        FileBackedTasksManager fileBacked = fileBackedTasksManager.loadFromFile(dir1);
+        FileBackedTasksManager fileBacked = FileBackedTasksManager.loadFromFile(dir1);
         System.out.println(fileBacked.getEpic(1));
         System.out.println(fileBacked.getHistory());
         Epic epic3 = fileBacked.createEpic(new Epic("go to the store", "make a list of products"));
@@ -194,7 +194,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return taskHistory;
     }
 
-    private static Task fromString(String value) {
+    private Task fromString(String value) {
         String[] task = value.split(",");
         Status status = null;
         switch (task[3]) {
@@ -252,7 +252,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return number;
     }
 
-    static public FileBackedTasksManager loadFromFile(File file) {
+    public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
         HashMap<Integer, Task> tasks = new HashMap<>();
         String line;
@@ -262,7 +262,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             while ((line = bufferedReader.readLine()) != null) {
                 if (count != 0) {
                     if (!line.isBlank()) {
-                        Task task = fromString(line);
+                        Task task = fileBackedTasksManager.fromString(line);
                         tasks.put(task.getId(), task);
                     } else {
                         String line2 = bufferedReader.readLine();

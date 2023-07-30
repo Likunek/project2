@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    public static Node<Task> head;
-    public static  Node<Task> tail;
+    public Node<Task> head;
+    public Node<Task> tail;
     ArrayList<Task> history;
     Map<Integer, Node<Task>> elements;
 

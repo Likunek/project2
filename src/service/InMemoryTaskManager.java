@@ -13,9 +13,9 @@ import java.util.List;
 
 
 public class InMemoryTaskManager implements TaskManager {
-    static HashMap<Integer, Task> tasks;
-    static HashMap<Integer, Epic> epics;
-    static HashMap<Integer, SubTask> subTasks;
+    HashMap<Integer, Task> tasks;
+    HashMap<Integer, Epic> epics;
+    HashMap<Integer, SubTask> subTasks;
     final HistoryManager historyManager;
     static int seq = 0;
 
