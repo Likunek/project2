@@ -1,12 +1,9 @@
-import java.io.IOException;
-import java.util.ArrayList;
-
 import Model.Epic;
 import Model.SubTask;
-import Model.Task;
-import service.FileBackedTasksManager;
 import service.Managers;
 import service.TaskManager;
+
+import java.io.IOException;
 
 public class Main {
        public static void main(String[] args) throws IOException {
@@ -14,9 +11,9 @@ public class Main {
 
           //Создаю эпик с двумя подзадачами
            Epic epic =  taskManager.createEpic(new Epic("make a pie", "by 6 pm"));
-           taskManager.createSubTask(new SubTask("dough", "knead the dough", epic.getId()));
-           taskManager.createSubTask(new SubTask("filling", "cook the filling", epic.getId()));
-           taskManager.createSubTask(new SubTask("bake", "put it in the oven", epic.getId()));
+           taskManager.createSubTask(new SubTask("dough", "knead the dough", epic.getId())).data(10, "15.08.2023, 14:00");
+           taskManager.createSubTask(new SubTask("filling", "cook the filling", epic.getId())).data(20, "15.08.2023, 14:20");
+           taskManager.createSubTask(new SubTask("bake", "put it in the oven", epic.getId())).data(40, "15.08.2023, 14:50");
 
            System.out.println(epic + "\n" + epic.getSubTasksId());
 
@@ -39,6 +36,9 @@ public class Main {
            // Удаляю эпик с 3 подзадачами
            taskManager.deleteEpic(1);
            System.out.println(taskManager.getHistory());
+
+
+           taskManager.getAll();
 
 
 
