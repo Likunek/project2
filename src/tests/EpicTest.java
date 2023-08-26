@@ -1,9 +1,11 @@
-package Model;
+package tests;
 
+import model.Epic;
+import model.SubTask;
 import org.junit.jupiter.api.Test;
 import service.InMemoryTaskManager;
 
-import static Model.Status.*;
+import static model.Status.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {

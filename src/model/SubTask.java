@@ -1,7 +1,4 @@
-package Model;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
+package model;
 
 public class SubTask extends Task{
     int epicId;

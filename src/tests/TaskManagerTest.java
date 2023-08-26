@@ -1,16 +1,17 @@
-package service;
+package tests;
 
-import Model.Epic;
-import Model.SubTask;
-import Model.Task;
+import model.Epic;
+import model.SubTask;
+import model.Task;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import service.TaskManager;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import static Model.Status.IN_PROGRESS;
-import static Model.Status.NEW;
+import static model.Status.IN_PROGRESS;
+import static model.Status.NEW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

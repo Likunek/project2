@@ -1,8 +1,10 @@
-package service;
+package tests;
 
-import Model.Task;
+import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.InMemoryHistoryManager;
+import service.InMemoryTaskManager;
 
 import java.util.ArrayList;
 import java.util.List;

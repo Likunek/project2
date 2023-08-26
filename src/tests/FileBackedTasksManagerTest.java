@@ -1,14 +1,16 @@
-package service;
+package tests;
 
-import Model.Epic;
+import model.Epic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.FileBackedTasksManager;
+import tests.TaskManagerTest;
 
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>{
+class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
     File dir;
     @BeforeEach
