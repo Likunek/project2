@@ -23,6 +23,8 @@ public class InMemoryHistoryManager implements HistoryManager {
   }
 
 
+
+
     @Override
     public void add(Task task) {
         if (!history.isEmpty()) {
@@ -80,6 +82,19 @@ public class InMemoryHistoryManager implements HistoryManager {
                 tail = prev;
             }
         }
+    }
+
+    private static class Node<T>{
+        public T task;
+        public Node<T> next;
+        public Node<T> prev;
+
+        public Node(Node<T> prev, T task, Node<T> next) {
+            this.task = task;
+            this.next = next;
+            this.prev = prev;
+        }
+
     }
     private void getTasks(Node<Task> task){
         history.add(task.task);

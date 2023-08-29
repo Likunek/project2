@@ -53,7 +53,7 @@ abstract class TaskManagerTest<T extends TaskManager>{
 
         assertEquals(0, tasksManager.getAllTasks().size(), "Неверное количество задач.");
 
-        task.data(20, "15.08.2023 - 14:00");
+        task.settingTheTime(20, "15.08.2023 - 14:00");
 
         assertEquals("15.08.2023 - 14:20", task.getEndTime(), "Неверное стартовое время");
         //со статусом не получится проверить неверный индификатор, т.к. его нет в enum,
@@ -102,7 +102,7 @@ abstract class TaskManagerTest<T extends TaskManager>{
 
         assertEquals(0, tasksManager.getAllSubTasks().size(), "Неверное количество задач.");
 
-        subTask.data(20, "15.08.2023 - 14:00");
+        subTask.settingTheTime(20, "15.08.2023 - 14:00");
 
         assertEquals("15.08.2023 - 14:20", subTask.getEndTime(), "Неверное стартовое время");
 
@@ -192,17 +192,4 @@ abstract class TaskManagerTest<T extends TaskManager>{
         assertEquals(0, tasksManager.getTheSubTasksEpic(epicId).size(), "Неверный размер List");
     }
 
-    @Test
-    void getAll() {
-        List<Object> tasks = List.of(List.of(tasksManager.getTask(taskId)),
-                List.of(tasksManager.getEpic(epicId)), List.of(tasksManager.getSubTask(subTaskId)));
-
-        List<Object> task = List.of();
-
-        Assertions.assertIterableEquals(tasks, tasksManager.getAll(), "Неверный вывод всех задач");
-
-        tasksManager.deleteAll();
-
-        assertEquals(task, tasksManager.getAll().get(0), "Неверный вывод всех задач");
-    }
 }

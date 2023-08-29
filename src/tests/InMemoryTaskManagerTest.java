@@ -4,7 +4,7 @@ package tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.InMemoryTaskManager;
-import service.TaskManagerTest;
+
 
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -35,7 +35,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @Test
     void createSubTask() {
 
-    assertNull(tasksManager.tasks.get(0), "Задачи возвращаются неверно.");
+    assertNull(tasksManager.subTasks.get(0), "Задачи возвращаются неверно.");
     }
 
 }

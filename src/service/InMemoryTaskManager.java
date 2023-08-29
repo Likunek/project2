@@ -11,27 +11,12 @@ import java.util.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
-    protected HashMap<Integer, Task> tasks;
-    protected HashMap<Integer, Epic> epics;
-    protected HashMap<Integer, SubTask> subTasks;
+    public HashMap<Integer, Task> tasks;
+    public HashMap<Integer, Epic> epics;
+    public HashMap<Integer, SubTask> subTasks;
     final HistoryManager historyManager;
     static int seq = 0;
-
-
-    Comparator<Task> userComparator = new Comparator<Task>() {
-
-            public int compare(Task task1, Task task2) {
-                if (task1.getStartTime().isBefore(task2.getStartTime())) {
-                    return 1;
-                } else if (task1.getStartTime().isAfter(task2.getStartTime())) {
-                    return -1;
-                }else {
-                    return 0;
-                }
-            }
-    };
-
-    Set<Task> tasksTime = new TreeSet<>(userComparator);
+    protected Set<Task> tasksTime;
 
 
     public InMemoryTaskManager() {
@@ -39,6 +24,8 @@ public class InMemoryTaskManager implements TaskManager {
         epics = new HashMap<>();
         subTasks = new HashMap<>();
         this.historyManager = Managers.getDefaultHistoryManager();
+        tasksTime = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+
     }
 
 
@@ -250,6 +237,7 @@ public class InMemoryTaskManager implements TaskManager {
         return allTask;
     }
 
+    @Override
     public Set<Task> getPrioritizedTasks(){
         return tasksTime;
     }
@@ -280,7 +268,7 @@ public class InMemoryTaskManager implements TaskManager {
                 }
             }
         }
-        epics.get(subTask.getEpicId()).data(duration,startTime.format(subTask.formatter));
+        epics.get(subTask.getEpicId()).settingTheTime(duration,startTime.format(subTask.formatter));
         epics.get(subTask.getEpicId()).setEndTime(endTime);
     }
     private void updateEpicStatus(Epic epic){

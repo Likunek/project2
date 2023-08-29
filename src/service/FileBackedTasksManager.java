@@ -1,9 +1,6 @@
 package service;
 
-import model.Epic;
-import model.Status;
-import model.SubTask;
-import model.Task;
+import model.*;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -26,13 +23,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         //Создаю эпик с двумя подзадачами
         Epic epic = fileBackedTasksManager.createEpic(new Epic("make a pie", "by 6 pm"));
         SubTask subTask1 = new SubTask("dough", "knead the dough", epic.getId());
-        subTask1.data( 10, "15.08.2023 - 14:00");
+        subTask1.settingTheTime( 10, "15.08.2023 - 14:00");
         fileBackedTasksManager.createSubTask(subTask1);
         SubTask subTask2 = new SubTask("filling", "cook the filling", epic.getId());
-        subTask2.data(20, "15.08.2023 - 14:20");
+        subTask2.settingTheTime(20, "15.08.2023 - 14:20");
         fileBackedTasksManager.createSubTask(subTask2);
         SubTask subTask3 = new SubTask("bake", "put it in the oven", epic.getId());
-        subTask3.data(40, "15.08.2023 - 14:50");
+        subTask3.settingTheTime(40, "15.08.2023 - 14:50");
         fileBackedTasksManager.createSubTask(subTask3);
 
         System.out.println(epic + "\n" + epic.getSubTasksId());
@@ -48,6 +45,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(fileBackedTasksManager.getEpic(1));
         System.out.println(fileBackedTasksManager.getEpic(5));
         System.out.println(fileBackedTasksManager.getHistory());
+        System.out.println( "  99999999999999999999999");
+        System.out.println(fileBackedTasksManager.getPrioritizedTasks());
 
         //Удаляю задачу
         fileBackedTasksManager.deleteSubTask(3);
@@ -142,6 +141,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return task;
     }
 
+    @Override
+    public Set<Task> getPrioritizedTasks(){
+        return tasksTime;
+    }
     @Override
     public Epic getEpic(int id) {
         Epic epic = super.getEpic(id);
@@ -248,7 +251,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 tasks.get(Integer.parseInt(task[0])).setId(Integer.parseInt(task[0]));
                 tasks.get(Integer.parseInt(task[0])).setStatus(status);
                 if (task.length > 6) {
-                    tasks.get(Integer.parseInt(task[0])).data(Integer.parseInt(task[6]), task[7]);
+                    tasks.get(Integer.parseInt(task[0])).settingTheTime(Integer.parseInt(task[6]), task[7]);
                 }
                 return tasks.get(Integer.parseInt(task[0]));
             case "EPIC":
@@ -267,7 +270,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 subTasks.get(Integer.parseInt(task[0])).setId(Integer.parseInt(task[0]));
                 subTasks.get(Integer.parseInt(task[0])).setStatus(status);
                 if (task.length > 6) {
-                    subTasks.get(Integer.parseInt(task[0])).data(Integer.parseInt(task[6]),
+                    subTasks.get(Integer.parseInt(task[0])).settingTheTime(Integer.parseInt(task[6]),
                             task[7]);
                 }
                 return subTasks.get(Integer.parseInt(task[0]));
@@ -312,14 +315,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                         assert task != null;
                         tasks.put(task.getId(), task);
                     } else {
-                        if (!line.isBlank()){
                         String line2 = bufferedReader.readLine();
-                        for (Integer i : historyFromString(line2)) {
-                            if (tasks.containsKey(i)) {
-                                fileBackedTasksManager.historyManager.add(tasks.get(i));
-                                if (max < i) max = i;
+                        if (! line2.isBlank()) {
+                            for (Integer i : historyFromString(line2)) {
+                                if (tasks.containsKey(i)) {
+                                    fileBackedTasksManager.historyManager.add(tasks.get(i));
+                                    if (max < i) max = i;
+                                }
                             }
-                        }
                         }
                     }
                 }

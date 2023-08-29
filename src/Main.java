@@ -11,9 +11,9 @@ public class Main {
 
           //Создаю эпик с двумя подзадачами
            Epic epic =  taskManager.createEpic(new Epic("make a pie", "by 6 pm"));
-           taskManager.createSubTask(new SubTask("dough", "knead the dough", epic.getId())).data(10, "15.08.2023, 14:00");
-           taskManager.createSubTask(new SubTask("filling", "cook the filling", epic.getId())).data(20, "15.08.2023, 14:20");
-           taskManager.createSubTask(new SubTask("bake", "put it in the oven", epic.getId())).data(40, "15.08.2023, 14:50");
+           taskManager.createSubTask(new SubTask("dough", "knead the dough", epic.getId())).settingTheTime(10, "15.08.2023, 14:00");
+           taskManager.createSubTask(new SubTask("filling", "cook the filling", epic.getId())).settingTheTime(20, "15.08.2023, 14:20");
+           taskManager.createSubTask(new SubTask("bake", "put it in the oven", epic.getId())).settingTheTime(40, "15.08.2023, 14:50");
 
            System.out.println(epic + "\n" + epic.getSubTasksId());
 

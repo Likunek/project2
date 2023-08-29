@@ -4,15 +4,15 @@ import model.Epic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.FileBackedTasksManager;
-import tests.TaskManagerTest;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
     File dir;
+
     @BeforeEach
     protected void setUp() {
         dir = new File("file.scv");
@@ -23,7 +23,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     @Test
     void loadFromFile(){
 
-      // assertNull(FileBackedTasksManager.loadFromFile(dir));
 
         Epic epic1 = tasksManager.createEpic(new Epic("1", "2"));
 

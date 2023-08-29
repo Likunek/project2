@@ -17,14 +17,14 @@ public class Task {
     public DateTimeFormatter formatter;
 
 
-    public Task(String name, String description){
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
         formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm");
     }
 
-    public void data(int duration, String startTime1){
+    public void settingTheTime(int duration, String startTime1) {
         this.duration = ofMinutes(duration);
         this.startTime = LocalDateTime.parse(startTime1, formatter);
     }
