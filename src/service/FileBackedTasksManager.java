@@ -13,7 +13,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     File dir;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws InterruptedException {
 
 
         File dir1 = new File("file.scv");
@@ -45,7 +45,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(fileBackedTasksManager.getEpic(1));
         System.out.println(fileBackedTasksManager.getEpic(5));
         System.out.println(fileBackedTasksManager.getHistory());
-        System.out.println( "  99999999999999999999999");
         System.out.println(fileBackedTasksManager.getPrioritizedTasks());
 
         //Удаляю задачу
