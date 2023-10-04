@@ -1,11 +1,7 @@
 package service;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import model.Epic;
 import model.SubTask;
@@ -16,130 +12,154 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static jdk.internal.util.xml.XMLStreamWriter.DEFAULT_CHARSET;
 
 public class HttpTaskServer {
     private static final int PORT = 8080;
-    TaskManager taskManager;
+    HttpTaskManager taskManager;
     public HttpServer httpServer;
 
-    public HttpTaskServer(URI url) throws IOException {
-        taskManager = Managers.getDefaultHttpTaskManager(url);
+    public HttpTaskServer() throws IOException {
         httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress("localhost", PORT), 0);
-        httpServer.createContext("/tasks", new Handler());
-        httpServer.start();
+        httpServer.createContext("/tasks", this::handle);
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
     }
 
-    class Handler implements HttpHandler {
-        @Override
+    public void start(){
+        taskManager =new HttpTaskManager(URI.create("http://localhost:8070/register"));
+        httpServer.start();
+        taskManager.start();
+    }
+
+    public void stop(){
+        httpServer.stop(1);
+        taskManager.stop();
+    }
+
         public void handle(HttpExchange httpExchange) throws IOException {
 
-            Gson gson = new Gson();
-            String path = httpExchange.getRequestURI().getPath();
-            String[] splitStrings = path.split("/");
 
+              Gson gson = new Gson();
+              String path = httpExchange.getRequestURI().getPath();
+              String[] splitStrings = path.split("/");
 
-            switch(httpExchange.getRequestMethod()) {
+              switch (httpExchange.getRequestMethod()) {
 
-                case "POST":
-                    InputStream inputStream = httpExchange.getRequestBody();
-                    String body = gson.toJson(new String(inputStream.readAllBytes(), DEFAULT_CHARSET));
+                  case "POST":
+                      InputStream inputStream = httpExchange.getRequestBody();
+                      String body = null;
+                      body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
 
-                    switch (splitStrings[2]) {
+                      switch (splitStrings[2]) {
 
-                        case "task":
-                            System.out.println(taskManager.createTask(gson.fromJson(body, Task.class)).getId());
-                        break;
-                        case "epic":
-                            System.out.println(taskManager.createEpic(gson.fromJson(body, Epic.class)).getId());
-                        break;
-                        case "subTask":
-                            System.out.println(taskManager.createSubTask(gson.fromJson(body, SubTask.class)).getId());
-                        break;
-                        default:
-                            System.out.println("Некорректное значение");
-                            break;
-                    }
-                case "GET":
+                          case "task":
+                              writeResponse(httpExchange, gson.toJson(taskManager.createTask(gson.fromJson(body, Task.class))),200);
+                              break;
+                          case "epic":
+                              writeResponse(httpExchange, gson.toJson(taskManager.createEpic(gson.fromJson(body, Epic.class))),200);
+                              break;
+                          case "subTask":
+                              writeResponse(httpExchange, gson.toJson(taskManager.createSubTask(gson.fromJson(body, SubTask.class))),200);
+                              break;
+                          default:
+                              System.out.println("Некорректное значение");
+                              break;
+                      }
+                      break;
 
-                    switch (splitStrings.length){
-                        case 2:
-                            writeResponse(httpExchange, gson.toJson(taskManager.getAll()), 200);
-                        case 3:
-                        switch (splitStrings[2]) {
-                            case "task":
-                                writeResponse(httpExchange, gson.toJson(taskManager.getAllTasks()), 200);
-                                break;
-                            case "epic":
-                                writeResponse(httpExchange, gson.toJson(taskManager.getAllEpics()), 200);
-                                break;
-                            case "subTask":
-                                writeResponse(httpExchange, gson.toJson(taskManager.getAllSubTasks()), 200);
-                                break;
-                            case "history":
-                                writeResponse(httpExchange, gson.toJson(taskManager.getHistory()), 200);
-                                break;
-                            default:
-                                writeResponse(httpExchange, "Некорректное значение", 400);
-                                break;
-                        }
-                        case 4:
-                            JsonElement jsonElement = JsonParser.parseString(splitStrings[3]);
-                            if(!jsonElement.isJsonObject()) {
-                                System.out.println("Ответ от сервера не соответствует ожидаемому.");
-                                return;
-                            }
+                  case "GET":
 
-                            JsonObject jsonObject = jsonElement.getAsJsonObject();
-                            int id = jsonObject.get("id").getAsInt();
+                      switch (splitStrings.length) {
+                          case 2:
+                              writeResponse(httpExchange, gson.toJson(taskManager.getAll()), 200);
+                              break;
+                          case 3:
+                              String rawQuery = httpExchange.getRequestURI().getRawQuery();
+                              if (rawQuery == null) {
+                                  switch (splitStrings[2]) {
+                                      case "task":
+                                          writeResponse(httpExchange, gson.toJson(taskManager.getAllTasks()), 200);
+                                          break;
+                                      case "epic":
+                                          writeResponse(httpExchange, gson.toJson(taskManager.getAllEpics()), 200);
+                                          break;
+                                      case "subTask":
+                                          writeResponse(httpExchange, gson.toJson(taskManager.getAllSubTasks()), 200);
+                                          break;
+                                      case "history":
+                                          writeResponse(httpExchange, gson.toJson(taskManager.getHistory()), 200);
+                                          break;
+                                      default:
+                                          writeResponse(httpExchange, "Некорректное значение", 400);
+                                          break;
+                                  }
+                              }else {
+                                  Pattern pattern = Pattern.compile("\\d");
+                                  Matcher matcher = pattern.matcher(rawQuery);
+                                  String id = null;
+                                  while (matcher.find()) {
+                                      id = rawQuery.substring(matcher.start(), matcher.end());
+                                  }
+                                  assert id != null;
+                                  switch (splitStrings[2]) {
+                                      case "task":
+                                          writeResponse(httpExchange, gson.toJson(taskManager.getTask(Integer.parseInt(id))), 200);
+                                          break;
+                                      case "epic":
+                                          writeResponse(httpExchange, gson.toJson(taskManager.getEpic(Integer.parseInt(id))), 200);
+                                          break;
+                                      case "subTask":
+                                          writeResponse(httpExchange, gson.toJson(taskManager.getSubTask(Integer.parseInt(id))), 200);
+                                          break;
+                                      default:
+                                          writeResponse(httpExchange, "Некорректное значение", 400);
+                                          break;
+                                  }
+                              }
+                              break;
+                          default:
+                              writeResponse(httpExchange, "Некорректное значение", 400);
+                              break;
+                      }
+                      break;
 
-                        switch (splitStrings[2]) {
-                            case "task":
-                                writeResponse(httpExchange, gson.toJson(taskManager.getTask(id)), 200);
-                                break;
-                            case "epic":
-                                writeResponse(httpExchange, gson.toJson(taskManager.getEpic(id)), 200);
-                                break;
-                            case "subTask":
-                                writeResponse(httpExchange, gson.toJson(taskManager.getSubTask(id)), 200);
-                                break;
-                            default:
-                                writeResponse(httpExchange, "Некорректное значение", 400);
-                                break;
-                        }
-                        default:
-                        writeResponse(httpExchange, "Некорректное значение", 400);
-                        break;
-                    }
+                  case "DELETE":
+                      String rawQuery = httpExchange.getRequestURI().getRawQuery();
+                      Pattern pattern = Pattern.compile("\\d");
+                      Matcher matcher = pattern.matcher(rawQuery);
+                      String id = null;
+                      while (matcher.find()) {
+                          id = rawQuery.substring(matcher.start(), matcher.end());
+                      }
+                      assert id != null;
+                      switch (splitStrings[2]) {
+                          case "task":
+                              taskManager.deleteTask(Integer.parseInt(id));
+                              writeResponse(httpExchange, "Задача успешно удалена", 400);
+                              break;
+                          case "epic":
+                              taskManager.deleteEpic(Integer.parseInt(id));
+                              writeResponse(httpExchange, "Задача успешно удалена", 400);
+                              break;
+                          case "subTask":
+                              taskManager.deleteSubTask(Integer.parseInt(id));
+                              writeResponse(httpExchange, "Задача успешно удалена", 400);
+                              break;
+                          default:
+                              writeResponse(httpExchange, "Некорректное значение", 400);
+                              break;
+                      }
+                      break;
+                  default:
+                      writeResponse(httpExchange, "Некорректное значение", 400);
 
-                case "DELETE":
-                    switch (splitStrings[2]) {
-                        case "task":
-                            taskManager.deleteTask(Integer.parseInt(splitStrings[3]));
-                            break;
-                        case "epic":
-                            taskManager.deleteEpic(Integer.parseInt(splitStrings[3]));
-                            break;
-                        case "subTask":
-                            taskManager.deleteSubTask(Integer.parseInt(splitStrings[3]));
-                            break;
-                        default:
-                            writeResponse(httpExchange, "Некорректное значение", 400);
-                            break;
-                    }
-                default:
-                    writeResponse(httpExchange, "Некорректное значение", 400);
-                    break;
-
-            }
-
-
+              }
 
         }
-    }
 
     private void writeResponse(HttpExchange exchange,
                                String responseString,
@@ -147,6 +167,7 @@ public class HttpTaskServer {
         if(responseString.isBlank()) {
             exchange.sendResponseHeaders(responseCode, 0);
         } else {
+            exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
             byte[] bytes = responseString.getBytes(DEFAULT_CHARSET);
             exchange.sendResponseHeaders(responseCode, bytes.length);
             try (OutputStream os = exchange.getResponseBody()) {

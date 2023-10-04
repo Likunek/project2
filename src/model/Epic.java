@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class Epic extends Task{
     @Override
     public String getEndTime() {
        try {
-           return endTime.format(formatter);
+           return endTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm"));
        } catch (NullPointerException exception){
            throw new NullPointerException("У epic отсутсвуют подзадачи, вычислить endTime невозможно");
        }

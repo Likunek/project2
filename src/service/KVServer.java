@@ -1,5 +1,6 @@
 package service;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -29,15 +30,16 @@ public class KVServer {
     }
 
 
-    public static void main(String[] args) throws IOException {
-        new KVServer().start();
-    }
     private void load(HttpExchange h) throws IOException {
         if (!hasAuth(h)) {
             System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
             h.sendResponseHeaders(403, 0);
             return;
         }
+        Gson gson = new Gson();
+        String path = h.getRequestURI().getPath();
+        String[] splitStrings = path.split("/");
+        sendText(h, data.get(splitStrings[2]));
 
     }
 
@@ -64,6 +66,16 @@ public class KVServer {
                 }
                 data.put(key, value);
                 System.out.println("Значение для ключа " + key + " успешно обновлено!");
+                h.sendResponseHeaders(200, 0);
+            }else if("DELETE".equals(h.getRequestMethod())){
+                String key = h.getRequestURI().getPath().substring("/save/".length());
+                if (key.isEmpty()) {
+                    System.out.println("Key для сохранения пустой. key указывается в пути: /save/{key}");
+                    h.sendResponseHeaders(400, 0);
+                    return;
+                }
+                data.remove(key);
+                System.out.println(23);
                 h.sendResponseHeaders(200, 0);
             } else {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
@@ -93,6 +105,9 @@ public class KVServer {
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
         System.out.println("API_TOKEN: " + apiToken);
         server.start();
+    }
+    public void stop(){
+        server.stop(1);
     }
 
     private String generateApiToken() {

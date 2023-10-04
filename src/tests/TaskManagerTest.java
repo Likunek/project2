@@ -25,10 +25,10 @@ abstract class TaskManagerTest<T extends TaskManager>{
     int epicId;
     int subTaskId;
 
-    protected  void setUp() {
-        task = tasksManager.createTask(new Task("1", "2"));
+    protected void setUp() {
+        task = tasksManager.createTask(new Task("1", "2", "15.08.2023 - 14:00", 20));
         epic = tasksManager.createEpic(new Epic("1", "2"));
-        subTask = tasksManager.createSubTask(new SubTask("1", "2", epic.getId()));
+        subTask = tasksManager.createSubTask(new SubTask("1", "2", "15.08.2023 - 14:00", 20, epic.getId()));
         taskId = task.getId();
         epicId = epic.getId();
         subTaskId = subTask.getId();
@@ -52,8 +52,6 @@ abstract class TaskManagerTest<T extends TaskManager>{
         tasksManager.deleteTask(taskId);
 
         assertEquals(0, tasksManager.getAllTasks().size(), "Неверное количество задач.");
-
-        task.settingTheTime(20, "15.08.2023 - 14:00");
 
         assertEquals("15.08.2023 - 14:20", task.getEndTime(), "Неверное стартовое время");
         //со статусом не получится проверить неверный индификатор, т.к. его нет в enum,
@@ -101,8 +99,6 @@ abstract class TaskManagerTest<T extends TaskManager>{
         tasksManager.deleteSubTask(subTaskId);
 
         assertEquals(0, tasksManager.getAllSubTasks().size(), "Неверное количество задач.");
-
-        subTask.settingTheTime(20, "15.08.2023 - 14:00");
 
         assertEquals("15.08.2023 - 14:20", subTask.getEndTime(), "Неверное стартовое время");
 

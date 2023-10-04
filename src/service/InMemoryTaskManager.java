@@ -7,7 +7,10 @@ import model.Task;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static java.time.Duration.ofMinutes;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -268,7 +271,8 @@ public class InMemoryTaskManager implements TaskManager {
                 }
             }
         }
-        epics.get(subTask.getEpicId()).settingTheTime(duration,startTime.format(subTask.formatter));
+        epics.get(subTask.getEpicId()).setDuration(ofMinutes(duration));
+        epics.get(subTask.getEpicId()).setStartTime(startTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")));
         epics.get(subTask.getEpicId()).setEndTime(endTime);
     }
     private void updateEpicStatus(Epic epic){

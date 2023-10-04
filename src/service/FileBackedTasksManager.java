@@ -4,6 +4,7 @@ import model.*;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.time.Duration.ofMinutes;
@@ -22,14 +23,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         //Создаю эпик с двумя подзадачами
         Epic epic = fileBackedTasksManager.createEpic(new Epic("make a pie", "by 6 pm"));
-        SubTask subTask1 = new SubTask("dough", "knead the dough", epic.getId());
-        subTask1.settingTheTime( 10, "15.08.2023 - 14:00");
+        SubTask subTask1 = new SubTask("dough", "knead the dough", "15.08.2023 - 14:00", 10, epic.getId());
         fileBackedTasksManager.createSubTask(subTask1);
-        SubTask subTask2 = new SubTask("filling", "cook the filling", epic.getId());
-        subTask2.settingTheTime(20, "15.08.2023 - 14:20");
+        SubTask subTask2 = new SubTask("filling", "cook the filling", "15.08.2023 - 14:20", 20, epic.getId());
         fileBackedTasksManager.createSubTask(subTask2);
-        SubTask subTask3 = new SubTask("bake", "put it in the oven", epic.getId());
-        subTask3.settingTheTime(40, "15.08.2023 - 14:50");
+        SubTask subTask3 = new SubTask("bake", "put it in the oven", "15.08.2023 - 14:50", 40, epic.getId());
         fileBackedTasksManager.createSubTask(subTask3);
 
         System.out.println(epic + "\n" + epic.getSubTasksId());
@@ -203,8 +201,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             taskHistory = String.join(",", Integer.toString(task.getId()), Type.SUBTASK.toString(), task.getName(),
                     task.getStatus().toString(), task.getDescription(), Integer.toString(((SubTask) task).getEpicId()));
             if (task.getStartTime() != null){
-                taskHistory = String.join(",", taskHistory, Long.toString(task.getDuration().toMinutes()),
-                        task.getStartTime().format(task.formatter), "\n");
+                taskHistory = String.join(",", taskHistory,
+                        task.getStartTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")),
+                        Long.toString(task.getDuration().toMinutes()),"\n");
             }else {
                 taskHistory = String.join(",", taskHistory, "\n");
             }
@@ -212,8 +211,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             taskHistory = String.join(",", Integer.toString(task.getId()), Type.EPIC.toString(), task.getName(),
                     task.getStatus().toString(), task.getDescription(), "  ");
             if (task.getStartTime() != null){
-                taskHistory = String.join(",", taskHistory, Long.toString(task.getDuration().toMinutes()),
-                        task.getStartTime().format(task.formatter), task.getEndTime(),"\n");
+                taskHistory = String.join(",", taskHistory,
+                        task.getStartTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")),
+                        Long.toString(task.getDuration().toMinutes()), task.getEndTime(),"\n");
             }else {
                 taskHistory = String.join(",", taskHistory, "\n");
             }
@@ -221,8 +221,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             taskHistory = String.join(",", Integer.toString(task.getId()), Type.TASK.toString(), task.getName(),
                     task.getStatus().toString(), task.getDescription(), "  ");
             if (task.getStartTime() != null){
-                taskHistory = String.join(",", taskHistory, Long.toString(task.getDuration().toMinutes()),
-                        task.getStartTime().format(task.formatter),"\n");
+                taskHistory = String.join(",", taskHistory,
+                        task.getStartTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")),
+                        Long.toString(task.getDuration().toMinutes()), "\n");
             }else {
                 taskHistory = String.join(",", taskHistory, "\n");
             }
@@ -246,32 +247,32 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
         switch (task[1]) {
             case "TASK":
-                tasks.put(Integer.parseInt(task[0]), new Task(task[2], task[4]));
+                if (task.length > 6) {
+                tasks.put(Integer.parseInt(task[0]), new Task(task[2], task[4], task[6], Integer.parseInt(task[7])));
+                }else {
+                    tasks.put(Integer.parseInt(task[0]), new Task(task[2], task[4]));
+                }
                 tasks.get(Integer.parseInt(task[0])).setId(Integer.parseInt(task[0]));
                 tasks.get(Integer.parseInt(task[0])).setStatus(status);
-                if (task.length > 6) {
-                    tasks.get(Integer.parseInt(task[0])).settingTheTime(Integer.parseInt(task[6]), task[7]);
-                }
                 return tasks.get(Integer.parseInt(task[0]));
             case "EPIC":
                 epics.put(Integer.parseInt(task[0]), new Epic(task[2], task[4]));
                 epics.get(Integer.parseInt(task[0])).setId(Integer.parseInt(task[0]));
                 epics.get(Integer.parseInt(task[0])).setStatus(status);
                 if (task.length > 6) {
-                    epics.get(Integer.parseInt(task[0])).setDuration(ofMinutes(Integer.parseInt(task[6])));
-                    epics.get(Integer.parseInt(task[0])).setStartTime(task[7]);
-                    epics.get(Integer.parseInt(task[0])).setEndTime(LocalDateTime.parse(task[8],
-                            epics.get(Integer.parseInt(task[0])).formatter));
+                    epics.get(Integer.parseInt(task[0])).setDuration(ofMinutes(Integer.parseInt(task[7])));
+                    epics.get(Integer.parseInt(task[0])).setStartTime(task[6]);
+                    epics.get(Integer.parseInt(task[0])).setEndTime(LocalDateTime.parse(task[8], DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")));
                 }
                 return epics.get(Integer.parseInt(task[0]));
             case "SUBTASK":
-                subTasks.put(Integer.parseInt(task[0]), new SubTask(task[2], task[4], Integer.parseInt(task[5])));
+                if (task.length > 6) {
+                subTasks.put(Integer.parseInt(task[0]), new SubTask(task[2], task[4], task[6], Integer.parseInt(task[7]), Integer.parseInt(task[5])));
+                }else {
+                    subTasks.put(Integer.parseInt(task[0]), new SubTask(task[2], task[4], Integer.parseInt(task[5])));
+                }
                 subTasks.get(Integer.parseInt(task[0])).setId(Integer.parseInt(task[0]));
                 subTasks.get(Integer.parseInt(task[0])).setStatus(status);
-                if (task.length > 6) {
-                    subTasks.get(Integer.parseInt(task[0])).settingTheTime(Integer.parseInt(task[6]),
-                            task[7]);
-                }
                 return subTasks.get(Integer.parseInt(task[0]));
             default:
                 System.out.println("Что-то пошло не так");

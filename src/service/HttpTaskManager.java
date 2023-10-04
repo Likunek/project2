@@ -24,6 +24,13 @@ public class HttpTaskManager extends InMemoryTaskManager{
 
     }
 
+    public void start(){
+        kvTaskClient.start();
+    }
+    public void stop(){
+        kvTaskClient.stop();
+    }
+
     @Override
     public Task createTask(Task task) {
         Task task1 = super.createTask(task);
@@ -67,19 +74,16 @@ public class HttpTaskManager extends InMemoryTaskManager{
     @Override
     public void deleteTask(int id) {
         super.deleteTask(id);
-        kvTaskClient.put(Integer.toString(id), gson.toJson("Задача удалена"));
     }
 
     @Override
     public void deleteEpic(int id) {
         super.deleteEpic(id);
-        kvTaskClient.put(Integer.toString(id), gson.toJson("Задача удалена"));
     }
 
     @Override
     public void deleteSubTask(int id) {
         super.deleteSubTask(id);
-        kvTaskClient.put(Integer.toString(id), gson.toJson("Задача удалена"));
     }
 
     @Override

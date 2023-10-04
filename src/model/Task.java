@@ -14,24 +14,26 @@ public class Task {
     private String description;
     protected Duration duration;
     protected LocalDateTime startTime;
-    public DateTimeFormatter formatter;
 
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
-        formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm");
     }
 
-    public void settingTheTime(int duration, String startTime1) {
+    public Task(String name, String description, String startTime, int duration){
+        this.name = name;
+        this.description = description;
+        this.status = Status.NEW;
         this.duration = ofMinutes(duration);
-        this.startTime = LocalDateTime.parse(startTime1, formatter);
+        this.startTime = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm"));
     }
+
 
     public String getEndTime() {
         try {
-            return startTime.plus(duration).format(formatter);
+            return startTime.plus(duration).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm"));
         } catch (NullPointerException exception){
             throw new NullPointerException("У task отсутсвует заданное время, вычислить endTime невозможно");
         }
@@ -74,12 +76,13 @@ public class Task {
     public void setDuration(Duration duration) {
         this.duration = duration;
     }
+
     public LocalDateTime getStartTime() {
         return startTime;
     }
 
     public void setStartTime(String startTime) {
-        this.startTime = LocalDateTime.parse(startTime, formatter);
+        this.startTime = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm"));
     }
     @Override
     public String toString() {
@@ -88,8 +91,8 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", status='" + status + '\'' +
                 ", description='" + description + '\'' +
-                ", duration='" + duration + '\'' +
                 ", startTime='" + startTime + '\'' +
+                ", duration='" + duration + '\'' +
                 '}';
     }
 
