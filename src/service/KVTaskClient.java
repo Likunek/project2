@@ -7,13 +7,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class KVTaskClient {
-    URI url;
+    private URI url;
     KVServer kvServer;
     private String apiToken;
     HttpClient client;
     HttpRequest request;
     HttpResponse<String> response;
-    URI uri;
 
     public KVTaskClient(URI url) throws IOException, InterruptedException {
         kvServer =  new KVServer();

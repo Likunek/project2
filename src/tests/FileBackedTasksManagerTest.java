@@ -23,7 +23,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     @Test
     void loadFromFile(){
 
-
         Epic epic1 = tasksManager.createEpic(new Epic("1", "2"));
 
         FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(dir);

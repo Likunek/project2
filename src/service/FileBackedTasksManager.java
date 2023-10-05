@@ -316,7 +316,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                         tasks.put(task.getId(), task);
                     } else {
                         String line2 = bufferedReader.readLine();
-                        if (! line2.isBlank()) {
+                        if (line2 != null) {
                             for (Integer i : historyFromString(line2)) {
                                 if (tasks.containsKey(i)) {
                                     fileBackedTasksManager.historyManager.add(tasks.get(i));

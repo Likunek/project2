@@ -1,7 +1,7 @@
 id,type,name,status,description,epic,duration,start,endTime
-1,EPIC,make a pie,NEW,by 6 pm,  ,70,15.08.2023 - 14:00,15.08.2023 - 15:00,
-5,EPIC,morning,NEW,wash your hair,  ,
-2,SUBTASK,dough,NEW,knead the dough,1,10,15.08.2023 - 14:50,
-4,SUBTASK,bake,NEW,put it in the oven,1,40,15.08.2023 - 14:00,
+37,TASK,1,NEW,2,  ,15.08.2023 - 14:00,20,
+38,EPIC,1,NEW,2,  ,18.08.2023 - 14:30,20,18.08.2023 - 14:50,
+40,EPIC,1,NEW,2,  ,
+39,SUBTASK,1,NEW,2,38,18.08.2023 - 14:30,20,
 
-4,5,1
+40

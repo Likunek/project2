@@ -12,7 +12,6 @@ import java.util.*;
 
 import static java.time.Duration.ofMinutes;
 
-
 public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Task> tasks;
     public HashMap<Integer, Epic> epics;
@@ -20,7 +19,6 @@ public class InMemoryTaskManager implements TaskManager {
     final HistoryManager historyManager;
     static int seq = 0;
     protected Set<Task> tasksTime;
-
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
@@ -30,9 +28,6 @@ public class InMemoryTaskManager implements TaskManager {
         tasksTime = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     }
-
-
-
 
     @Override
     public Task createTask(Task task) {
@@ -45,6 +40,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
           return  task;
     }
+
     @Override
     public Epic createEpic(Epic epic){
         epic.setId(++seq);
@@ -67,7 +63,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return subTask;
     }
-
 
     @Override
     public void updateTask(Task task) {
@@ -95,10 +90,7 @@ public class InMemoryTaskManager implements TaskManager {
             tasksTime.add(subTask);
             getEndTimeEpic(subTask);
         }
-
     }
-
-
 
     @Override
     public void deleteTask(int id) {
@@ -120,6 +112,7 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.remove(id);
         epics.remove(id);
     }
+
     @Override
     public void deleteSubTask(int id){
         epics.get(subTasks.get(id).getEpicId()).getSubTasksId().remove(Integer.valueOf(id));
@@ -167,8 +160,6 @@ public class InMemoryTaskManager implements TaskManager {
         tasksTime.clear();
     }
 
-
-
     @Override
     public Task getTask(int id){
         if (tasks.containsKey(id)) {
@@ -189,7 +180,6 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Epic с данным id не найден");
             return null;
         }
-
     }
 
     @Override
@@ -248,7 +238,7 @@ public class InMemoryTaskManager implements TaskManager {
     private boolean prioritizedTasks(Task task){
         if (!tasksTime.isEmpty()){
         for (Task task2 : tasksTime){
-            if (task2.getStartTime().equals(task.getStartTime())){
+            if (task2.getStartTime().equals(task.getStartTime()) && (task2.getId() != task.getId())){
                 System.out.println("Данное время в вашем расписании уже есть, поменяйте время старта\n" + task);
                 return true;
             }
@@ -275,6 +265,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics.get(subTask.getEpicId()).setStartTime(startTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")));
         epics.get(subTask.getEpicId()).setEndTime(endTime);
     }
+
     private void updateEpicStatus(Epic epic){
         int countDone = 0;
         int countNew = 0;
@@ -295,5 +286,4 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
     }
-
 }

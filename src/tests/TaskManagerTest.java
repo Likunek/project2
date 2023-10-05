@@ -28,7 +28,7 @@ abstract class TaskManagerTest<T extends TaskManager>{
     protected void setUp() {
         task = tasksManager.createTask(new Task("1", "2", "15.08.2023 - 14:00", 20));
         epic = tasksManager.createEpic(new Epic("1", "2"));
-        subTask = tasksManager.createSubTask(new SubTask("1", "2", "15.08.2023 - 14:00", 20, epic.getId()));
+        subTask = tasksManager.createSubTask(new SubTask("1", "2", "18.08.2023 - 14:30", 20, epic.getId()));
         taskId = task.getId();
         epicId = epic.getId();
         subTaskId = subTask.getId();
@@ -100,7 +100,7 @@ abstract class TaskManagerTest<T extends TaskManager>{
 
         assertEquals(0, tasksManager.getAllSubTasks().size(), "Неверное количество задач.");
 
-        assertEquals("15.08.2023 - 14:20", subTask.getEndTime(), "Неверное стартовое время");
+        assertEquals("18.08.2023 - 14:50", subTask.getEndTime(), "Неверное стартовое время");
 
     }
 
@@ -175,7 +175,6 @@ abstract class TaskManagerTest<T extends TaskManager>{
         tasksManager.deleteAll();
 
         assertEquals(0, tasksManager.getHistory().size(), "Неверный вывод истории");
-
     }
     @Test
     void getTheSubTasksEpic() throws FileNotFoundException {

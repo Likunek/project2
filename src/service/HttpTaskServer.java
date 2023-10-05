@@ -15,7 +15,7 @@ import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static jdk.internal.util.xml.XMLStreamWriter.DEFAULT_CHARSET;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HttpTaskServer {
     private static final int PORT = 8080;
@@ -51,8 +51,7 @@ public class HttpTaskServer {
 
                   case "POST":
                       InputStream inputStream = httpExchange.getRequestBody();
-                      String body = null;
-                      body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
+                      String body = new String(inputStream.readAllBytes(), UTF_8);
 
                       switch (splitStrings[2]) {
 
@@ -168,7 +167,7 @@ public class HttpTaskServer {
             exchange.sendResponseHeaders(responseCode, 0);
         } else {
             exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-            byte[] bytes = responseString.getBytes(DEFAULT_CHARSET);
+            byte[] bytes = responseString.getBytes(UTF_8);
             exchange.sendResponseHeaders(responseCode, bytes.length);
             try (OutputStream os = exchange.getResponseBody()) {
                 os.write(bytes);
